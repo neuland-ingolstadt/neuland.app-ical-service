@@ -1,8 +1,8 @@
-# Campus Life Events iCal Subscription Service
+# CL Events iCal Subscription Service
 
-A Rust-based service that fetches event data from the [neuland.app-backend](https://github.com/neuland-ingolstadt/neuland.app-backend) GraphQL API and serves it as an iCalendar subscription feed (`.ics` format) over HTTP.
+A Rust-based service that fetches campus life event data from the [neuland.app-backend](https://github.com/neuland-ingolstadt/neuland.app-backend) GraphQL API and serves it as an iCalendar subscription feed (`.ics` format) over HTTP.
 
-The service uses Actix-Web for the HTTP server, the `graphql_client` crate for querying the GraphQL API, and the `icalendar` crate to build iCal feeds.
+The service is written in Rust and uses the Actix-Web framework for the HTTP server. It queries the GraphQL API using the `graphql_client` crate and generates iCal feeds with the `icalendar` crate.
 
 ## Features
 
