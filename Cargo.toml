@@ -1,0 +1,20 @@
+[package]
+name = "neuland-app-ical-service"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "neuland-app-ical-service"
+path = "src/main.rs"
+
+[dependencies]
+actix-web = "4.10.2"                      # HTTP server framework
+graphql_client = "0.14.0"               # GraphQL client
+serde = { version = "1.0.219", features = ["derive"] }  
+icalendar = "0.16.13"                    # iCal format support
+reqwest = { version = "0.12.15", features = ["json"] }  # HTTP client
+tokio = { version = "1.44.1", features = ["full"] }       # Async runtime
+chrono = { version = "0.4.40", features = ["serde"] }
+url = "2.5.4"
+log = "0.4.27"
+env_logger = "0.11.7"

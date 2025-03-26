@@ -1,0 +1,9 @@
+
+services:
+  ical-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7077:7077"
+    restart: always

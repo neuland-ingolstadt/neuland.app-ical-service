@@ -1,0 +1,17 @@
+query FetchEvents{
+          clEvents {
+            id
+            host {
+              name
+              website
+              instagram
+            }
+            titles {
+              de
+              en
+            }
+            location
+            startDateTime
+            endDateTime
+          }
+        }
