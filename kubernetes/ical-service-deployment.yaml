@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: ical-service
+  name: ical-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ical-service
+  template:
+    metadata:
+      labels:
+        io.kompose.service: ical-service
+    spec:
+      containers:
+        - image: ghcr.io/neuland-ingolstadt/neuland.app-ical-service:main
+          name: ical-service
+          ports:
+            - containerPort: 7077
+              protocol: TCP
+      restartPolicy: Always
