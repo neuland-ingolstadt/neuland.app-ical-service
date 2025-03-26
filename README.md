@@ -1,8 +1,8 @@
 # CL Events iCal Subscription Service
 
-A Rust-based service that fetches campus life event data from the [neuland.app-backend](https://github.com/neuland-ingolstadt/neuland.app-backend) GraphQL API and serves it as an iCalendar subscription feed (`.ics` format) over HTTP.
+A Rust-based microservice that fetches event data from the [neuland.app-backend](https://github.com/neuland-ingolstadt/neuland.app-backend) GraphQL API and serves it as an iCalendar subscription feed (`.ics` format) over HTTP.
 
-The service is written in Rust and uses the Actix-Web framework for the HTTP server. It queries the GraphQL API using the `graphql_client` crate and generates iCal feeds with the `icalendar` crate.
+It is designed to serve the campus events of the University of Applied Sciences Ingolstadt (THI) to common calendar applications, which makes it easier for students to stay up-to-date with the latest events.
 
 ## Features
 
@@ -41,6 +41,9 @@ The service is written in Rust and uses the Actix-Web framework for the HTTP ser
    ```sh
    curl http://localhost:7077/calendar.ics
    ```
+
+> [!NOTE]  
+> Common calender applications do not support subscription feeds from local URLs. You can use a service like [ngrok](https://ngrok.com/) to expose your local server to the internet.
 
 - **Manual Testing:**  
   Run the service locally and access the `/calendar.ics` endpoint via a web browser or `curl`.
