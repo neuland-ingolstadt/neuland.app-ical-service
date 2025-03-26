@@ -45,16 +45,6 @@ It is designed to serve the campus events of the University of Applied Sciences 
 > [!NOTE]  
 > Common calender applications do not support subscription feeds from local URLs. You can use a service like [ngrok](https://ngrok.com/) to expose your local server to the internet.
 
-- **Manual Testing:**  
-  Run the service locally and access the `/calendar.ics` endpoint via a web browser or `curl`.
-
-- **Automated Tests:**  
-  You can add unit tests to key functions (e.g., date parsing in [`src/ical_service.rs`](src/ical_service.rs)) by using Rust’s built-in testing framework. Run tests with:
-
-  ```sh
-  cargo test
-  ```
-
 ## Contributing
 
 Contributions are welcome! Please follow the standard Git workflow:
