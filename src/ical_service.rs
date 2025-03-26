@@ -1,5 +1,5 @@
 use crate::graphql_client::get_events;
-use chrono::{NaiveDateTime, TimeZone, Utc};
+use chrono::{DateTime, Utc};
 use icalendar::EventLike;
 use icalendar::{Calendar, Component, Event};
 use log::error;
@@ -21,29 +21,30 @@ pub async fn generate_ical() -> Result<String, Box<dyn std::error::Error>> {
 
         let ical_event = Event::new()
             .summary(&event.title)
-            .starts(Utc.from_utc_datetime(&start))
-            .ends(Utc.from_utc_datetime(&end))
+            .starts(start) // using UTC directly
+            .ends(end) // using UTC directly
             .description(event.description.as_deref().unwrap_or(""))
             .uid(&event.id)
             .location(event.location.as_deref().unwrap_or(""))
+            .url(event.url.as_deref().unwrap_or(""))
             .done();
+
         calendar.push(ical_event);
     }
 
     Ok(calendar.to_string())
 }
 
-fn parse_datetime(datetime_str: &str) -> Result<NaiveDateTime, Box<dyn std::error::Error>> {
-    let formats = [
-        "%Y-%m-%dT%H:%M:%S%.fZ",
-        "%Y-%m-%d %H:%M:%S UTC",
-        "%Y-%m-%dT%H:%M:%S",
-        "%Y-%m-%d %H:%M:%S",
-    ];
-    for fmt in formats.iter() {
-        if let Ok(dt) = NaiveDateTime::parse_from_str(datetime_str, fmt) {
-            return Ok(dt);
-        }
+fn parse_datetime(datetime_str: &str) -> Result<DateTime<Utc>, Box<dyn std::error::Error>> {
+    // try RFC3339
+    if let Ok(dt) = DateTime::parse_from_rfc3339(datetime_str) {
+        return Ok(dt.with_timezone(&Utc));
+    }
+    // fallback: handle strings ending with " UTC"
+    if let Some(stripped) = datetime_str.strip_suffix(" UTC") {
+        let new_str = format!("{}Z", stripped.replace(" ", "T"));
+        let dt = DateTime::parse_from_rfc3339(&new_str)?;
+        return Ok(dt.with_timezone(&Utc));
     }
     Err(format!("Couldn't parse datetime string: {}", datetime_str).into())
 }

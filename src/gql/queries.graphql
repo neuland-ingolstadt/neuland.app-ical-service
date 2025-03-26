@@ -13,5 +13,6 @@ query FetchEvents{
             location
             startDateTime
             endDateTime
+            eventUrl
           }
         }

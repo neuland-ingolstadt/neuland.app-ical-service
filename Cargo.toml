@@ -8,13 +8,15 @@ name = "neuland-app-ical-service"
 path = "src/main.rs"
 
 [dependencies]
-actix-web = "4.10.2"                      # HTTP server framework
-graphql_client = "0.14.0"               # GraphQL client
+actix-web = "4.10.2"
+graphql_client = "0.14.0"
 serde = { version = "1.0.219", features = ["derive"] }  
-icalendar = "0.16.13"                    # iCal format support
-reqwest = { version = "0.12.15", features = ["json"] }  # HTTP client
-tokio = { version = "1.44.1", features = ["full"] }       # Async runtime
+icalendar = "0.16.13"
+reqwest = { version = "0.12.15", features = ["json"] }
+tokio = { version = "1.44.1", features = ["full"] }
 chrono = { version = "0.4.40", features = ["serde"] }
 url = "2.5.4"
 log = "0.4.27"
 env_logger = "0.11.7"
+chrono-tz = "0.10.3"
+cached = {version ="0.55.1", features = ["async"] }
