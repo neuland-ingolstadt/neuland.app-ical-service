@@ -4,6 +4,9 @@ A Rust-based microservice that fetches event data from the [neuland.app-backend]
 
 It is designed to serve the campus events of the University of Applied Sciences Ingolstadt (THI) to common calendar applications, which makes it easier for students to stay up-to-date with the latest events.
 
+> [!TIP]
+> Check it out by subscribing to the calendar feed at https://ical.neuland.app/cl-events.ics.
+
 ## Features
 
 - **GraphQL Integration:** Uses a GraphQL query defined in [`src/graphql.rs`](src/graphql.rs) to retrieve events.
@@ -36,7 +39,7 @@ It is designed to serve the campus events of the University of Applied Sciences 
 
 3. **Accessing the Service:**
 
-   Visit [http://localhost:7077/calendar.ics](http://localhost:7077/calendar.ics) in your browser or use a tool like cURL:
+   Visit [http://localhost:7077/cl-events.ics](http://localhost:7077/cl-events.ics) in your browser or use a tool like cURL:
 
    ```sh
    curl http://localhost:7077/calendar.ics

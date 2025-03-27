@@ -5,7 +5,7 @@ mod graphql;
 mod graphql_client;
 mod ical_service;
 
-#[get("/calendar.ics")]
+#[get("/cl-events.ics")]
 async fn calendar() -> impl Responder {
     match ical_service::generate_ical().await {
         Ok(ics) => HttpResponse::Ok().content_type("text/calendar").body(ics),

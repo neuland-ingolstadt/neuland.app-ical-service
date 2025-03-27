@@ -1,4 +1,5 @@
 use cached::proc_macro::cached;
+use chrono::{DateTime, Duration, Utc};
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
 
@@ -8,14 +9,14 @@ use crate::graphql::{fetch_events, FetchEvents};
 pub struct Event {
     pub id: String,
     pub title: String,
-    pub start: String,
-    pub end: String,
+    pub start: DateTime<Utc>,
+    pub end: DateTime<Utc>,
     pub description: Option<String>,
     pub location: Option<String>,
     pub url: Option<String>,
 }
 
-#[cached(time = 300, result = true)]
+#[cached(time = 600, result = true)]
 pub async fn get_events() -> Result<Vec<Event>, reqwest::Error> {
     let client = reqwest::Client::new();
     let variables = fetch_events::Variables {};
@@ -39,13 +40,10 @@ pub async fn get_events() -> Result<Vec<Event>, reqwest::Error> {
                     .de
                     .or(e.titles.en)
                     .unwrap_or_else(|| format!("Event {}", index));
-                let start = e
-                    .start_date_time
-                    .map(|dt| dt.to_string())
-                    .unwrap_or_default();
-                let end = e.end_date_time.map(|dt| dt.to_string()).unwrap_or_default();
+                let start = e.start_date_time.expect("Missing start date");
+                let end = e.end_date_time.unwrap_or(start + Duration::hours(2));
                 let description = Some(format!(
-                    "Host: {}\nWebsite: {}\nInstagram: {}",
+                    "Organizer: {}\nWebsite: {}\nInstagram: {}",
                     e.host.name,
                     e.host.website.map(|u| u.to_string()).unwrap_or_default(),
                     e.host.instagram.map(|u| u.to_string()).unwrap_or_default()
