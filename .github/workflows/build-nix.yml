@@ -1,0 +1,49 @@
+name: Backend Image Build & Publish
+
+on:
+  push:
+    branches: ["nix"]
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build:
+    name: Build Nix targets
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v20
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Fix Nix Store Permissions
+        run: |
+          sudo mkdir -p /nix
+          sudo chown -R runner:runner /nix
+      - name: Cache Nix Store
+        uses: actions/cache@v3
+        with:
+          path: |
+            /nix/store
+            /nix/var/nix/db
+            /nix/var/nix/gcroots
+            /nix/var/nix/profiles
+            /nix/var/nix/temproots
+          key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
+          restore-keys: |
+            nix-${{ runner.os }}-
+      - name: Build default package
+        run: nix build ".#image"
+      - id: repository
+        name: Generate Registry String
+        uses: vishalmamidi/lowercase-action@v1
+        with:
+          string: ${{ env.REGISTRY}}/${{ github.repository }}
+      - name: Pushing Image to GCR
+        run: |
+          export SUFFIX=$([ ${{ github.ref }} = "refs/head/develop" ] && echo "-dev")
+          echo Pushing to ${{ steps.repository.outputs.lowercase }}:develop
+          skopeo copy --dest-creds ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} docker-archive:./result docker://${{ steps.repository.outputs.lowercase }}:develop
