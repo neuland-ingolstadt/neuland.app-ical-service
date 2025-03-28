@@ -13,7 +13,7 @@
         name = "neuland.app-ical-service";
 
         rustBuild = naersk-lib.buildPackage {
-          src = ".";
+          src = self;
           buildInputs = with pkgs; [ cargo rustc ];
         };
         dockerImage = pkgs.dockerTools.buildImage
