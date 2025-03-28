@@ -12,6 +12,8 @@
         naersk-lib = pkgs.callPackage naersk { };
         name = "neuland.app-ical-service";
 
+        binName = "neuland_app_ical_service";
+
         rustBuild = naersk-lib.buildPackage {
           src = self;
           buildInputs = with pkgs; [ cargo rustc ];
