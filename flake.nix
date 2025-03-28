@@ -24,7 +24,7 @@
             tag = rustBuild.version;
             copyToRoot = [ pkgs.cacert ];
             config = {
-              Entrypoint = [ "${rustBuild}/bin/${name}" ];
+            Entrypoint = [ "${rustBuild}/bin/${binName}" ];  // Use binName instead of name
             };
           };
       in
