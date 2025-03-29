@@ -1,23 +1,28 @@
-# Stage 1: Builder
-FROM rust:1.85-bullseye as builder
-WORKDIR /app
+# Stage 1: Nix builder
+FROM nixos/nix:latest AS builder
 
-COPY Cargo.toml Cargo.lock ./
-RUN cargo fetch
-
+# Copy the entire repository
+WORKDIR /build
 COPY . .
-RUN cargo build --release
 
-# Stage 2: Runtime
-FROM debian:bullseye-slim
+# Install dependencies needed for the build
+RUN nix-channel --update && \
+    nix-env -iA nixpkgs.git
 
-LABEL org.opencontainers.image.source="https://github.com/neuland-ingolstadt/neuland.app-ical-service" \
-      org.opencontainers.image.description="A Rust-based service that fetches event data from a GraphQL API and serves it as an iCalendar subscription feed." \
-      org.opencontainers.image.licenses="MIT"
+# Build the application using Nix
+RUN nix build .#default --print-build-logs
 
-RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-WORKDIR /app
+# Stage 2: Minimal runtime
+FROM scratch
 
-COPY --from=builder /app/target/release/neuland-app-ical-service /app/neuland-app-ical-service
+# Copy CA certificates for HTTPS requests
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+
+# Copy the built binary from the Nix store
+COPY --from=builder /build/result/bin/neuland-app-ical-service /neuland-app-ical-service
+
+# Expose the application port
 EXPOSE 7077
-CMD ["./neuland-app-ical-service"]
+
+# Run the application
+ENTRYPOINT ["/neuland-app-ical-service"]

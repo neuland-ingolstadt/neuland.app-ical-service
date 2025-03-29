@@ -12,25 +12,33 @@
         naersk-lib = pkgs.callPackage naersk { };
         name = "neuland.app-ical-service";
 
-        binName = "neuland_app_ical_service";
+        # The binary name should match what's in Cargo.toml
+        binName = "neuland-app-ical-service";
 
         rustBuild = naersk-lib.buildPackage {
           src = self;
           buildInputs = with pkgs; [ cargo rustc ];
         };
-        dockerImage = pkgs.dockerTools.buildImage
-          {
-            name = name;
-            tag = rustBuild.version;
-            copyToRoot = [ pkgs.cacert ];
-            config = {
+        
+        # Keep the Docker image builder for direct Nix usage
+        dockerImage = pkgs.dockerTools.buildImage {
+          name = name;
+          tag = rustBuild.version;
+          copyToRoot = [ pkgs.cacert ];
+          config = {
             Entrypoint = [ "${rustBuild}/bin/${binName}" ];
+            ExposedPorts = {
+              "7077/tcp" = {};
             };
           };
+        };
       in
       {
         defaultPackage = rustBuild;
-        packages.image = dockerImage;
+        packages = {
+          default = rustBuild;
+          image = dockerImage;
+        };
 
         devShell = with pkgs; mkShell {
           buildInputs = [ cargo rustc rustfmt ];
