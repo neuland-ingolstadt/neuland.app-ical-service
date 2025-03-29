@@ -2,7 +2,7 @@ name: Build Nix targets
 
 on:
   push:
-    branches: ["nix"]
+    branches: ["nixx"]
 
 env:
   REGISTRY: ghcr.io
