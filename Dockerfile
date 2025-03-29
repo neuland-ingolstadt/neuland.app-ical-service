@@ -10,7 +10,7 @@ RUN nix-channel --update && \
     nix-env -iA nixpkgs.git
 
 # Build the application using Nix
-RUN nix --extra-experimental-features nix-command build .#default --print-build-logs
+RUN nix --extra-experimental-features "nix-command flakes" build .#default --print-build-logs
 
 # Stage 2: Minimal runtime
 FROM scratch
