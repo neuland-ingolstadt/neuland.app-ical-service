@@ -11,6 +11,8 @@
         pkgs = import nixpkgs { inherit system; };
         naersk-lib = pkgs.callPackage naersk { };
         name = "neuland.app-ical-service";
+        binName = "neuland-app-ical-service";
+
 
         rustBuild = naersk-lib.buildPackage {
           src = self;
@@ -22,7 +24,7 @@
             tag = rustBuild.version;
             copyToRoot = [ pkgs.cacert ];
             config = {
-              Entrypoint = [ "${rustBuild}/bin/${name}" ];
+              Entrypoint = [ "${rustBuild}/bin/${binName}" ];  # Use binName here, not name
             };
           };
       in
