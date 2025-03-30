@@ -22,3 +22,13 @@ pub async fn generate_ical() -> Result<String, Box<dyn std::error::Error>> {
 
     Ok(calendar.to_string())
 }
+
+/// Fetches the Neuland Google Calendar ICS feed
+pub async fn fetch_google_calendar() -> Result<String, Box<dyn std::error::Error>> {
+    let google_calendar_url = "https://calendar.google.com/calendar/ical/fjk40qpdhmqrsf3be40sd355eg%40group.calendar.google.com/public/basic.ics";
+
+    let response = reqwest::get(google_calendar_url).await?;
+    let ics_content = response.text().await?;
+
+    Ok(ics_content)
+}
