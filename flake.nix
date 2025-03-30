@@ -24,7 +24,8 @@
             tag = rustBuild.version;
             copyToRoot = [ pkgs.cacert ];
             config = {
-              Entrypoint = [ "${rustBuild}/bin/${binName}" ];  # Use binName here, not name
+              Entrypoint = [ "${rustBuild}/bin/${binName}" ];
+              Ports = [ "7077/tcp" ];
             };
           };
       in
