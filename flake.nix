@@ -17,6 +17,7 @@
         rustBuild = naersk-lib.buildPackage {
           src = self;
           buildInputs = with pkgs; [ cargo rustc ];
+          stripBinaries = true;
         };
         dockerImage = pkgs.dockerTools.buildImage
           {
