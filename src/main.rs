@@ -16,13 +16,19 @@ async fn calendar() -> impl Responder {
     }
 }
 
-#[get("/neuland.ics")]
+#[get("/neuland-events.ics")]
 async fn neuland_calendar() -> impl Responder {
-    match ical_service::fetch_google_calendar().await {
-        Ok(ics) => HttpResponse::Ok().content_type("text/calendar").body(ics),
+    match ical_service::generate_neuland_ical().await {
+        Ok(ics) => HttpResponse::Ok()
+            .content_type("text/calendar")
+            .append_header((
+                "Content-Disposition",
+                "attachment; filename=\"neuland-events.ics\"",
+            ))
+            .body(ics),
         Err(e) => {
-            log::error!("Error fetching Google calendar: {:?}", e);
-            HttpResponse::InternalServerError().body("Error fetching calendar")
+            log::error!("Error generating Neuland calendar: {:?}", e);
+            HttpResponse::InternalServerError().body("Error generating Neuland calendar")
         }
     }
 }

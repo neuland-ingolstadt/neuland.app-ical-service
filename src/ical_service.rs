@@ -1,4 +1,4 @@
-use crate::graphql_client::get_events;
+use crate::graphql_client::{get_events, get_neuland_events};
 use icalendar::EventLike;
 use icalendar::{Calendar, Component, Event};
 
@@ -23,12 +23,37 @@ pub async fn generate_ical() -> Result<String, Box<dyn std::error::Error>> {
     Ok(calendar.to_string())
 }
 
-/// Fetches the Neuland Google Calendar ICS feed
-pub async fn fetch_google_calendar() -> Result<String, Box<dyn std::error::Error>> {
-    let google_calendar_url = "https://calendar.google.com/calendar/ical/fjk40qpdhmqrsf3be40sd355eg%40group.calendar.google.com/public/basic.ics";
+pub async fn generate_neuland_ical() -> Result<String, Box<dyn std::error::Error>> {
+    let events = get_neuland_events().await?;
+    let mut calendar = Calendar::new();
 
-    let response = reqwest::get(google_calendar_url).await?;
-    let ics_content = response.text().await?;
+    calendar.name("Neuland Events");
+    calendar.description("Club Events by Neuland Ingolstadt e.V.");
+    calendar.timezone("Europe/Berlin");
 
-    Ok(ics_content)
+    for event in events {
+        let mut ical_event = Event::new();
+        ical_event.summary(&event.title);
+        ical_event.starts(event.start);
+        ical_event.ends(event.end);
+        ical_event.uid(&event.id);
+
+        if let Some(desc) = &event.description {
+            ical_event.description(desc);
+        }
+
+        if let Some(loc) = &event.location {
+            if !loc.is_empty() {
+                ical_event.location(loc);
+            }
+        }
+
+        if let Some(url) = &event.url {
+            ical_event.url(url);
+        }
+
+        calendar.push(ical_event.done());
+    }
+
+    Ok(calendar.to_string())
 }
