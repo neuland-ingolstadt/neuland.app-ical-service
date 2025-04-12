@@ -16,3 +16,21 @@ query FetchEvents{
             eventUrl
           }
         }
+
+query NeulandEvents {
+    neulandEvents {
+        id
+        location
+        startTime
+        endTime
+        rrule
+        title {
+            de
+            en
+        }
+        description {
+            de
+            en
+        }
+    }
+}

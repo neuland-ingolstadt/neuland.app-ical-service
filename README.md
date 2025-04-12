@@ -5,14 +5,17 @@ A Rust-based microservice that fetches event data from the [neuland.app-backend]
 It is designed to serve the campus events of the University of Applied Sciences Ingolstadt (THI) to common calendar applications, which makes it easier for students to stay up-to-date with the latest events.
 
 > [!TIP]
-> Check it out by subscribing to the calendar feed at https://ical.neuland.app/cl-events.ics.
+> Check it out by subscribing to the calendar feeds at:
+> - Campus Life Events: https://ical.neuland.app/cl-events.ics
+> - Neuland Events: https://ical.neuland.app/neuland-events.ics
 
 ## Features
 
-- **GraphQL Integration:** Uses a GraphQL query defined in [`src/graphql.rs`](src/graphql.rs) to retrieve events.
+- **GraphQL Integration:** Uses GraphQL queries defined in [`src/gql/queries.graphql`](src/gql/queries.graphql) to retrieve events.
 - **Event Transformation:** Converts raw GraphQL event data into an internal event representation (see [`src/graphql_client.rs`](src/graphql_client.rs)).
-- **iCalendar Generation:** Builds a valid iCal feed from the event data (implemented in [`src/ical_service.rs`](src/ical_service.rs)).
-- **HTTP Server:** Exposes the generated calendar on an endpoint (`/calendar.ics`) using Actix-Web.
+- **Recurring Events:** Parses RRULE data to display recurring Neuland events for the next 6 months.
+- **iCalendar Generation:** Builds valid iCal feeds from the event data (implemented in [`src/ical_service.rs`](src/ical_service.rs)).
+- **HTTP Server:** Exposes the generated calendars on endpoints (`/cl-events.ics` and `/neuland-events.ics`) using Actix-Web.
 
 ## Prerequisites
 
@@ -39,10 +42,11 @@ It is designed to serve the campus events of the University of Applied Sciences 
 
 3. **Accessing the Service:**
 
-   Visit [http://localhost:7077/cl-events.ics](http://localhost:7077/cl-events.ics) in your browser or use a tool like cURL:
+   Visit [http://localhost:7077/cl-events.ics](http://localhost:7077/cl-events.ics) or [http://localhost:7077/neuland-events.ics](http://localhost:7077/neuland-events.ics) in your browser or use a tool like cURL:
 
    ```sh
-   curl http://localhost:7077/calendar.ics
+   curl http://localhost:7077/cl-events.ics
+   curl http://localhost:7077/neuland-events.ics
    ```
 
 > [!NOTE]  

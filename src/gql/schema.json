@@ -1855,6 +1855,18 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": "Image URL for the announcement",
+              "isDeprecated": false,
+              "name": "imageUrl",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": "Creation date of the announcement",
               "isDeprecated": false,
               "name": "createdAt",
@@ -2278,6 +2290,137 @@
           "possibleTypes": null
         },
         {
+          "description": "Events by Neuland Ingolstadt e.V.",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Unique identifier of the event",
+              "isDeprecated": false,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Title of the event in different languages",
+              "isDeprecated": false,
+              "name": "title",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "MultiLanguageString",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Description of the event in different languages",
+              "isDeprecated": false,
+              "name": "description",
+              "type": {
+                "kind": "OBJECT",
+                "name": "MultiLanguageString",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Location where the event takes place",
+              "isDeprecated": false,
+              "name": "location",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Creation date and time of the event",
+              "isDeprecated": false,
+              "name": "createdAt",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Last update date and time of the event",
+              "isDeprecated": false,
+              "name": "updatedAt",
+              "type": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Start date and time of the event",
+              "isDeprecated": false,
+              "name": "startTime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "End date and time of the event",
+              "isDeprecated": false,
+              "name": "endTime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Recurrence rule for recurring events (uses iCalendar RRULE format)",
+              "isDeprecated": false,
+              "name": "rrule",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "NeulandEvent",
+          "possibleTypes": null
+        },
+        {
           "description": "Room report input type. Used to create a new report about incorrect room data.",
           "enumValues": null,
           "fields": null,
@@ -2642,6 +2785,16 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            {
+              "defaultValue": null,
+              "description": "Image URL for the announcement",
+              "name": "imageUrl",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             }
           ],
           "interfaces": null,
@@ -2788,6 +2941,81 @@
           "possibleTypes": null
         },
         {
+          "description": "Input type for a event by Neuland Ingolstadt e.V.",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Title of the event in different languages",
+              "name": "title",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "MultiLanguageStringInput",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Description of the event in different languages",
+              "name": "description",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "MultiLanguageStringInput",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Location where the event takes place",
+              "name": "location",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Start date and time of the event",
+              "name": "startTime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "End date and time of the event",
+              "name": "endTime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Recurrence rule for recurring events (uses iCalendar RRULE format)",
+              "name": "rrule",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "NeulandEventInput",
+          "possibleTypes": null
+        },
+        {
           "description": "Root query",
           "enumValues": null,
           "fields": [
@@ -2856,6 +3084,30 @@
             },
             {
               "args": [],
+              "deprecationReason": null,
+              "description": "Get all campus life clubs",
+              "isDeprecated": false,
+              "name": "clClubs",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "Host",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [],
               "deprecationReason": "Use appAnnouncements query instead",
               "description": "Get the current announcements",
               "isDeprecated": true,
@@ -2879,7 +3131,18 @@
               }
             },
             {
-              "args": [],
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "active",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                }
+              ],
               "deprecationReason": null,
               "description": "Get the current in app announcements.",
               "isDeprecated": false,
@@ -2940,6 +3203,30 @@
                     "ofType": {
                       "kind": "OBJECT",
                       "name": "RoomReport",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Get all events by Neuland Ingolstadt e.V.",
+              "isDeprecated": false,
+              "name": "neulandEvents",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "NeulandEvent",
                       "ofType": null
                     }
                   }
@@ -3207,6 +3494,70 @@
               "description": "Delete a manual campus life event by ID. Note: This mutation is only available for authenticated users.",
               "isDeprecated": false,
               "name": "deleteManualClEvent",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "id",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "NeulandEventInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "Create or update a Neuland event. If an ID is provided, the event is updated, otherwise a new event is created. Note: This mutation is only available for authenticated users.",
+              "isDeprecated": false,
+              "name": "upsertNeulandEvent",
+              "type": {
+                "kind": "OBJECT",
+                "name": "UpsertResponse",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "id",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "Delete a Neuland event by ID. Note: This mutation is only available for authenticated users.",
+              "isDeprecated": false,
+              "name": "deleteNeulandEvent",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
