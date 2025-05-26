@@ -33,6 +33,33 @@ async fn neuland_calendar() -> impl Responder {
     }
 }
 
+#[get("/health")]
+async fn health_check() -> impl Responder {
+    let cl_result = ical_service::generate_ical().await;
+    let neuland_result = ical_service::generate_neuland_ical().await;
+
+    let cl_status = if cl_result.is_ok() { "ok" } else { "error" };
+    let neuland_status = if neuland_result.is_ok() { "ok" } else { "error" };
+
+    if cl_result.is_ok() && neuland_result.is_ok() {
+        HttpResponse::Ok().json(serde_json::json!({
+            "status": "healthy",
+            "services": {
+                "cl_events": cl_status,
+                "neuland_events": neuland_status
+            }
+        }))
+    } else {
+        HttpResponse::ServiceUnavailable().json(serde_json::json!({
+            "status": "unhealthy",
+            "services": {
+                "cl_events": cl_status,
+                "neuland_events": neuland_status
+            }
+        }))
+    }
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init();
@@ -43,6 +70,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::default())
             .service(calendar)
             .service(neuland_calendar)
+            .service(health_check)
     })
     .bind("0.0.0.0:7077")?
     .run()
