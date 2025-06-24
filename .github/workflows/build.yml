@@ -1,59 +1,95 @@
-name: Create and publish a Docker image
+name: Build and Deploy Docker Image
 
-# Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
   push:
-    branches: ['main']
+    branches: [ 'main' ]
+    paths:
+      - ".github/workflows/build.yml"
+      - "src/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "flake.nix"
+      - "flake.lock"
 
-# Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
-# There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
-  build-and-push-image:
-    runs-on: ubuntu-latest
-    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
+  cargo-check:
+    name: Cargo Check
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+            ~/.cargo/bin
+            ~/.rustup
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-clippy-${{ hashFiles('src/**') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-clippy-
+            ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-
+            ${{ runner.os }}-cargo-
+      
+      - name: Run cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+
+  build-and-deploy:
+    name: Build and Deploy Docker Image
+    runs-on: ubuntu-22.04
+    needs: cargo-check
     permissions:
       contents: read
       packages: write
-      attestations: write
-      id-token: write
-      #
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      # Uses the `docker/login-action` action to log in to the Container registry registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
-      - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v22
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Fix Nix Store Permissions
+        run: |
+          sudo mkdir -p /nix
+          sudo chown -R runner:runner /nix
+
+      - name: Cache Nix Store
+        uses: actions/cache@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
-      # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see [Usage](https://github.com/docker/build-push-action#usage) in the README of the `docker/build-push-action` repository.
-      # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+          path: |
+            /nix/store
+            /nix/var/nix/db
+            /nix/var/nix/gcroots
+            /nix/var/nix/profiles
+            /nix/var/nix/temproots
+          key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
+          restore-keys: |
+            nix-${{ runner.os }}-
+
+      - name: Build Docker image
+        run: nix build ".#dockerImage" --out-link result
+
+      - id: repository
+        name: Generate Registry String
+        uses: vishalmamidi/lowercase-action@v1
         with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-      
-      # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see [Using artifact attestations to establish provenance for builds](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds).
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
-      
+          string: ${{ env.REGISTRY}}/${{ github.repository }}
+
+      - name: Push Docker image to GHCR
+        run: |
+          echo "Pushing to ${{ steps.repository.outputs.lowercase }}:latest"
+          skopeo copy --dest-creds ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} docker-archive:./result docker://${{ steps.repository.outputs.lowercase }}:latest

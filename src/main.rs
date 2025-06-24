@@ -1,5 +1,5 @@
 use actix_web::middleware::Logger;
-use actix_web::{get, App, HttpResponse, HttpServer, Responder};
+use actix_web::{App, HttpResponse, HttpServer, Responder, get};
 use log::info;
 mod graphql;
 mod graphql_client;
@@ -39,7 +39,11 @@ async fn health_check() -> impl Responder {
     let neuland_result = ical_service::generate_neuland_ical().await;
 
     let cl_status = if cl_result.is_ok() { "ok" } else { "error" };
-    let neuland_status = if neuland_result.is_ok() { "ok" } else { "error" };
+    let neuland_status = if neuland_result.is_ok() {
+        "ok"
+    } else {
+        "error"
+    };
 
     if cl_result.is_ok() && neuland_result.is_ok() {
         HttpResponse::Ok().json(serde_json::json!({
