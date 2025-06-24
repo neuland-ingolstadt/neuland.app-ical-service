@@ -22,5 +22,6 @@ define_graphql_query!(NeulandEvents);
 pub mod scalar_types {
     use super::*;
     pub type DateTime = chrono::DateTime<Utc>;
+    #[allow(clippy::upper_case_acronyms)]
     pub type URL = String;
 }

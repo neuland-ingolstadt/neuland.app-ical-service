@@ -5,7 +5,7 @@ use rrule::RRuleSet;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
-use crate::graphql::{fetch_events, neuland_events, FetchEvents, NeulandEvents};
+use crate::graphql::{FetchEvents, NeulandEvents, fetch_events, neuland_events};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Event {
