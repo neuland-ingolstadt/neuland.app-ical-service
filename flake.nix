@@ -26,7 +26,7 @@
           copyToRoot = [ pkgs.cacert ];
           config = {
             Entrypoint = [ "${rustBuild}/bin/${name}" ];
-            ExposedPorts = { "8000/tcp" = {}; };
+            ExposedPorts = { "7077/tcp" = {}; };
             Env = [
               "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
             ];
