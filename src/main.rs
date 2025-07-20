@@ -10,7 +10,7 @@ async fn calendar() -> impl Responder {
     match ical_service::generate_ical().await {
         Ok(ics) => HttpResponse::Ok().content_type("text/calendar").body(ics),
         Err(e) => {
-            log::error!("Error generating calendar: {:?}", e);
+            log::error!("Error generating calendar: {e:?}");
             HttpResponse::InternalServerError().body("Error generating calendar")
         }
     }
@@ -27,7 +27,7 @@ async fn neuland_calendar() -> impl Responder {
             ))
             .body(ics),
         Err(e) => {
-            log::error!("Error generating Neuland calendar: {:?}", e);
+            log::error!("Error generating Neuland calendar: {e:?}");
             HttpResponse::InternalServerError().body("Error generating Neuland calendar")
         }
     }

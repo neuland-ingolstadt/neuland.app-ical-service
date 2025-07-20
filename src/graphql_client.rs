@@ -41,7 +41,7 @@ pub async fn get_events() -> Result<Vec<Event>, reqwest::Error> {
                     .titles
                     .de
                     .or(e.titles.en)
-                    .unwrap_or_else(|| format!("Event {}", index));
+                    .unwrap_or_else(|| format!("Event {index}"));
                 let start = e.start_date_time.expect("Missing start date");
                 let end = e.end_date_time.unwrap_or(start + Duration::hours(2));
                 let description = Some(format!(
@@ -96,7 +96,7 @@ pub async fn get_neuland_events() -> Result<Vec<Event>, reqwest::Error> {
             let start = match e.start_time {
                 Some(start_time) => start_time,
                 None => {
-                    log::debug!("Skipping event {} due to missing start time", id);
+                    log::debug!("Skipping event {id} due to missing start time");
                     continue;
                 }
             };
@@ -137,7 +137,7 @@ pub async fn get_neuland_events() -> Result<Vec<Event>, reqwest::Error> {
                         let occurrence_end = occurrence_start + duration;
 
                         events.push(Event {
-                            id: format!("{}-occurrence-{}", id, i),
+                            id: format!("{id}-occurrence-{i}"),
                             title: title.clone(),
                             start: occurrence_start,
                             end: occurrence_end,

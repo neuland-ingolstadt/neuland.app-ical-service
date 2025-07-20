@@ -1,0 +1,9 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: neuland.app-ical-service
+  namespace: flux-system
+spec:
+  image: ghcr.io/neuland-ingolstadt/neuland.app-ical-service
+  interval: 10m
+  

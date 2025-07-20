@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ical-service
+spec:
+  minReadySeconds: 3
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 60
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: ical-service
+  template:
+    metadata:
+      labels:
+        app: ical-service
+    spec:
+      containers:
+      - name: ical-service
+        image: ghcr.io/neuland-ingolstadt/neuland.app-ical-service
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 7077
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 7077
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 7077
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 100m
+            memory: 64Mi
+          requests:
+            cpu: 50m
+            memory: 32Mi

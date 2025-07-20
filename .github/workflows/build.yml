@@ -93,3 +93,5 @@ jobs:
         run: |
           echo "Pushing to ${{ steps.repository.outputs.lowercase }}:latest"
           skopeo copy --dest-creds ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} docker-archive:./result docker://${{ steps.repository.outputs.lowercase }}:latest
+          echo "Pushing to ${{ steps.repository.outputs.lowercase }}:build-${{ github.run_number }}"
+          skopeo copy --dest-creds ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} docker-archive:./result docker://${{ steps.repository.outputs.lowercase }}:build-${{ github.run_number }}

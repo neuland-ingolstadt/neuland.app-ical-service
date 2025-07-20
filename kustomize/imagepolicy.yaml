@@ -1,0 +1,14 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: ical-service
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: neuland.app-ical-service
+  policy:
+    numerical:
+      order: asc
+  filterTags:
+    pattern: '^build-([0-9]+)$'
+    extract: '$1'
